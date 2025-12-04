@@ -6,7 +6,11 @@
   "license": "MIT",
   "private": true,
   "main": "./main.js",
+  "bin": {
+    "mmc": "main.js"
+  },
   "scripts": {
+    "build": "npm install",
     "start": "node ./main.js",
     "test": "./node_modules/.bin/mocha ./unit_tests/*.spec.js --timeout 150000 --exit"
   },
@@ -16,6 +20,7 @@
     "chrome-apps-serialport": "^1.0.9",
     "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
+    "jade": "^1.11.0",
     "jsonfile": "^6.1.0",
     "morgan": "^1.10.1",
     "openurl": "^1.1.1",
