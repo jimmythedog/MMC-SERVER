@@ -1,11 +1,12 @@
-const fs = require('fs');
-// lets ensure the logs folder is empty
-if (fs.existsSync("logs")) {
-  fs.rmSync("logs", { recursive: true }) 
-}
-
 let path = require('path')
-const winston = require(path.join(process.cwd(), 'config/winston.js'));
+const winston = require('./config/winston.js');
+const logsPath = require('./VLCB-server/utilities.js').getLogsPath();
+const fs = require('fs');
+if (fs.existsSync(logsPath)) {
+  fs.rmSync(logsPath, { recursive: true })
+}
+fs.mkdirSync(logsPath);
+
 const name = "main"
 winston.info({message: name + ': Starting'});
 winston.info({message: name + ': current working directory ' + process.cwd()});
@@ -45,7 +46,7 @@ VLCB.run();
  * Module dependencies.
  */
 
-var app = require(path.join(process.cwd(), 'app'));
+var app = require('./app.js');
 var debug = require('debug')('express:server');
 var http = require('http');
 

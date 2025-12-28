@@ -7,9 +7,8 @@ const AdmZip = require("adm-zip");
 const EventEmitter = require('events').EventEmitter;
 const name = 'configuration'
 const os = require("os");
-const packageInfo = require(process.cwd()+'/package.json')
+const packageInfo = require('../package.json')
 const utils = require('./../VLCB-server/utilities.js');
-
 
 // Scope:
 // variables declared outside of the class are 'global' to this module only
@@ -38,7 +37,7 @@ const defaultLayoutData = {
   "eventDetails": {}
   }
 
-  const logsPath = path.join(process.cwd(), "logs")
+  const logsPath = utils.getLogsPath();
 
   const bustrafficPath = path.join(logsPath, "bustraffic.txt")
   const bootloaderDataPath = path.join(logsPath, "bootloaderData.txt")
@@ -96,11 +95,29 @@ class configuration {
       winston.info({message: className + `: currentUserDirectory: ` + this.currentUserDirectory});
       // and default layout exists (creates directory if not there also)
       this.createLayoutFile(this.currentUserDirectory, defaultLayoutData.layoutDetails.title)
+
+      if (process.env.MMC_SERVER_SYSTEM_DIRECTORY) {
+        winston.info({message:  className + ': MMC_SERVER_SYSTEM_DIRECTORY: '+ process.env.MMC_SERVER_SYSTEM_DIRECTORY});
+        this.cacheDirectory = path.join(process.env.MMC_SERVER_SYSTEM_DIRECTORY, "config")
+        winston.debug({message:  name + ': cacheDirectory: '+ this.cacheDirectory});
+      } else {
+        this.cacheDirectory = this.systemDirectory
+      }
+      if (!fs.existsSync(this.cacheDirectory)) {
+        fs.mkdirSync(this.cacheDirectory)
+      }
     } catch (err){
       winston.error({message:  name + ': createDirectories: '+ err});
     }
   }
 
+  getNodeConfigFile(){
+    return path.join(this.cacheDirectory, "nodeConfig.json");
+  }
+
+  getNodeDescriptorsFile(){
+    return path.join(this.cacheDirectory, "nodeDescriptors.json");
+  }
 
   //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
@@ -175,17 +192,16 @@ class configuration {
     // create filename
     const archiveFile = 'logs_' + utils.createDenseTimestamp() + '.zip'
 
-    let logsFolder = './logs'
     // get list of files in logs folder
-    var list = fs.readdirSync(logsFolder).filter(function (file) {
-      return fs.statSync(path.join(logsFolder, file)).isFile();
+    var list = fs.readdirSync(logsPath).filter(function (file) {
+      return fs.statSync(path.join(logsPath, file)).isFile();
     },(this));
 
     // now add all files in list to zip
     try{
       list.forEach(logFile => {
-        winston.info({message: name + `: archive: ` + path.join(logsFolder, logFile)});
-        zip.addLocalFile(path.join(logsFolder, logFile))
+        winston.info({message: name + `: archive: ` + path.join(logsPath, logFile)});
+        zip.addLocalFile(path.join(logsPath, logFile))
       })
       // create archive folder if it doesn't exist
       let archiveFolderName = path.join(this.appStorageDirectory, 'archives')
@@ -434,7 +450,7 @@ class configuration {
   //
   writeLogFile(fileName, data){
     let filePath = path.join(logsPath, fileName)
-    try{      
+    try{
       winston.debug({message: className + `: writeLogFile: ${filePath}`});
       jsonfile.writeFileSync(filePath, data, {spaces: 2, EOL: '\r\n'})
     } catch (error){
@@ -618,7 +634,6 @@ class configuration {
     }
   }
 
-
   //-----------------------------------------------------------------------------------------------
   //-----------------------------------------------------------------------------------------------
   // nodeConfig methods
@@ -629,13 +644,11 @@ class configuration {
   // reads/writes nodeConfig file to/from system directory
   //
   readNodeConfig(){
-    var filePath = this.systemDirectory + "/nodeConfig.json"
-    return jsonfile.readFileSync(filePath)
+    return jsonfile.readFileSync(this.getNodeConfigFile())
   }
   writeNodeConfig(data){
     winston.debug({message: className + `: writeNodeConfig:`});
-    var filePath = this.systemDirectory + "/nodeConfig.json"
-    jsonfile.writeFileSync(filePath, data, {spaces: 2, EOL: '\r\n'})
+    jsonfile.writeFileSync(this.getNodeConfigFile(), data, {spaces: 2, EOL: '\r\n'})
     this.writeLogFile("nodeConfig.json", data)
   }
 
@@ -650,13 +663,11 @@ class configuration {
   // reads/writes the module descriptors currently in use for nodes to/from system directory
   //
   readNodeDescriptors(){
-    var filePath = this.systemDirectory + "/nodeDescriptors.json"
-    return jsonfile.readFileSync(filePath)
+    return jsonfile.readFileSync(this.getNodeDescriptorsFile())
   }
 
   writeNodeDescriptors(data){
-    var filePath = this.systemDirectory + "/nodeDescriptors.json"
-    jsonfile.writeFileSync(filePath, data, {spaces: 2, EOL: '\r\n'})
+    jsonfile.writeFileSync(this.getNodeDescriptorsFile(), data, {spaces: 2, EOL: '\r\n'})
   }
 
 

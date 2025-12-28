@@ -1,7 +1,7 @@
 'use strict';
 const winston = require('winston');		// use config from root instance
 //const fs = require('fs');
-//var path = require('path');
+const path = require('path');
 //const AdmZip = require("adm-zip");
 const name = 'utilities'
 
@@ -274,3 +274,6 @@ exports.getModuleVersion = function getModuleVersion(node){
   return version
 }
 
+exports.getLogsPath = function getLogsPath(){
+  return process.env.MMC_SERVER_SYSTEM_DIRECTORY ? path.join(process.env.MMC_SERVER_SYSTEM_DIRECTORY, "logs") : "./logs";
+}
