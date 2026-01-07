@@ -1,0 +1,24 @@
+title Example of pushing message onto queue to send to CBUS
+group MMC_CLIENT {
+  @Actor WebUI
+  index_js
+}
+@Boundary mmc_client_io
+group MMC_SERVER {
+  socketServer
+  <<Node>> mergAdminNode
+  cbusLib
+  CBUS_Queue
+}
+
+WebUI->index_js.request_all_node_events(nodeNumber) {
+  index_js->mmc_client_io:emit("REQUEST_ALL_NODE_EVENTS", nodeNumber)
+}
+
+mmc_client_io->socketServer.on("REQUEST_ALL_NODE_EVENTS",data) {
+   mergAdminNode.request_all_node_events(data.nodeNumber) {
+    encodedMsg = cbusLib.encodeRQEVN(nodeNumber)
+     //Once pushed, msg will be sent (see Page 3)
+    CBUS_Queue.push(encodedMsg)
+  }
+}

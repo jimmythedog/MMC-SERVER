@@ -1,0 +1,33 @@
+title Proceed with Layout
+@Actor User
+group  MMC_CLIENT {
+  StartupDialog
+  index
+}
+@Boundary mmc_client_io
+group MMC_SERVER {
+  socketServer
+  cbusServer
+  messageRouter
+  <<Socket>> cbusClient
+}
+User->StartupDialog.clickProceed() {
+  StartupDialog->index.startConnection(data) {
+    mmc_client_io:emit "START_CONNECTION"
+  }
+  mmc_client_io->socketServer.on("START_CONNECTION", connDetails) {
+    if (connDetails.mode != "Network") {
+      // Start "internal" server if connecting via serial
+      cbusServer.connect(5550) {
+        connectSerialGC(serial);
+      }
+    }
+    messageRouter.connect(host, port) {
+      cbusClient.connect(host, port)
+    }
+  }
+}
+
+
+
+

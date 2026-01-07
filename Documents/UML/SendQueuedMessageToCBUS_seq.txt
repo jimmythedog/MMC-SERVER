@@ -1,0 +1,24 @@
+title Send queued message to CBUS
+@Actor Timer
+group MMC_SERVER {
+  <<Node>> mergAdminNode
+  CBUS_Queue
+  eventBus
+  messageRouter
+  cbusLib
+  <<Socket>> cbusClientSocket
+}
+
+Timer->mergAdminNode.sendCBUSIntervalFunc() {
+  encodedMsg = CBUS_Queue.pop()
+  cbusTransmit(encodedMsg) {
+  mergAdminNode->eventBus:emit("GRID_CONNECT_SEND", encodedMsg)
+  }
+}
+
+eventBus->messageRouter.on("GRID_CONNECT_SEND", data) {
+  encodedMsg = cbusLib.decode(data)
+  cbusClientSocket.write(encodedMsg)
+}
+
+
