@@ -1,0 +1,41 @@
+title Example of receiving message from CBUS (Node config update)
+@Actor Timer
+
+group MMC_SERVER {
+  <<Node>> mergAdminNode
+  EventEmitter
+  socketServer
+}
+@Boundary mmc_client_io
+group MMC_CLIENT {
+  index_js
+  @Actor WebUI
+}
+
+mergAdminNode->mergAdminNode.action_message(decodedMsg) {
+    // e.g.: received message requiring node update, so...
+  updateNodeConfig(decodedMsg) {
+    setNodeConfigHasChanged(true)
+  }
+}
+
+Timer->mergAdminNode.updateClients() {
+  foreach(nodeConfig.node) {
+    if(nodeConfigHasChanged) {
+      mergAdminNode->EventEmitter:emit('node', nodeConfig)
+    }
+  }
+}
+
+EventEmitter->socketServer.on("node", nodeConfig) {
+  mmc_client_io:emit("NODES", nodeConfig)
+}
+
+mmc_client_io->index_js.on("NODES", nodeConfig) {
+  forEach(node) {
+    // Update model
+    addNodeToLayout(node)
+  }
+  WebUI.refresh()
+}
+

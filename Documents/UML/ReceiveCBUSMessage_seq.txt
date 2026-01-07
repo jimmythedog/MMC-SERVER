@@ -1,0 +1,24 @@
+title Receive message from CBUS
+@Boundary CBUS
+
+group MMC_SERVER {
+  <<Socket>> cbusClient
+  messageRouter
+  <<Emitter>>eventBus
+  <<Node>> mergAdminNode
+  cbusLib
+}
+
+CBUS->cbusClient:emit(data)
+
+cbusClient->messageRouter.on (data) {
+  eventBus:emit("GRID_CONNECT_RECEIVE", data)
+}
+
+eventBus->mergAdminNode.on("GRID_CONNECT_RECEIVE", data) {
+  decodedMsg = cbusLib.decode(data)
+  //Action depends on messge:
+  //see ReceiveRefreshNodeFromCBUS example
+  action_message(decodedMsg)
+}
+
