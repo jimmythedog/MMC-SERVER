@@ -1,14 +1,17 @@
 {
   "author": "David Ellis",
   "description": "Module Management Console Server",
-  "name": "MMC",
   "version": "0.22.2",
   "license": "MIT",
-  "private": true,
+  "name": "@jimmythedog/mmc-server",
   "main": "./main.js",
+  "bin": {
+    "mmcserver": "./main.js"
+  },
   "scripts": {
     "start": "node ./main.js",
-    "test": "./node_modules/.bin/mocha ./unit_tests/*.spec.js --timeout 150000 --exit"
+    "test": "mocha ./unit_tests/*.spec.js --timeout 150000 --exit",
+    "bin": "mmcserver"
   },
   "dependencies": {
     "adm-zip": "^0.5.16",
@@ -28,5 +31,16 @@
     "chai": "^4.2.0",
     "mocha": "^11.7.4",
     "mocha-param": "^2.0.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jimmythedog/MMC-SERVER.git"
+  },
+  "homepage": "https://github.com/jimmythedog/MMC-SERVER#readme",
+  "bugs": {
+    "url": "https://github.com/jimmythedog/MMC-SERVER/issues"
+  },
+  "keywords": [
+    "merg"
+  ]
 }
