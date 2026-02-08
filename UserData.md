@@ -1,4 +1,4 @@
-## 'user' data
+# 'user' data
 
 Data entered by the user, such as the user configured layouts and the associated names & groups, are stored independently of the application, so upgrading or moving the application won't lose this information. This also includes any module descriptor files uploaded by the user
 
@@ -11,7 +11,7 @@ Note that for windows, all users share the same user data
 But for the other platforms, the 'user' data is specific to the user thats signed-in  
 Important - you may have to select 'Show hidden files, folders and drives' from Windows Explorer under "options->view" to see this folder
 
-### appSettings.json
+## appSettings.json
 
 For the majority of installs, where the user data is stored is expected to be transparent to the end user  
 However it is also possible to change this to a custom location (even a different drive), using a `"customUserDirectory"` setting - but this should be treated as an 'advanced' level option
@@ -26,3 +26,33 @@ It is strongly recommended that any changes made to appSettings.json are tested 
 
 This appSettings.json file is always stored in the directories described above (so won't be overwritten by an upgrade), but unlike the 'user' data, won't be affected by the 'CUSTOM' setting  
 It is the users responsibility to ensure the custom directory is accessible by the system and has the correct permissions
+
+## 'application generated' files
+
+Whilst running, the application will generate certain files e.g.:
+
+A few node information files are written in the application installation directory e.g.
+
+```
+[INSTALL_DIRECTORY]
+└── config
+    └── nodeConfig.json
+    └── nodeDescriptors.json
+```
+
+Also, logs are written to the directory from where the application was launched:
+
+```
+[LAUNCH_DIRECTORY]
+└── logs
+    ├── bootloaderData.txt
+    ├── bustraffic.txt
+    ├── console.log
+    ├── debug.log
+    ├── error.log
+    ├── info.log
+    └── warn.log
+```
+
+_**Note**_: In certain scenarios, the installation directory and/or the launch directory may not be writeable by the application; if this is the case, the same directory that is used for user files (described above) will be used
+
