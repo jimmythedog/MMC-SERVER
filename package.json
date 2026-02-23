@@ -10,7 +10,8 @@
   "scripts": {
     "start": "node ./main.js",
     "test": "mocha ./unit_tests/*.spec.js --timeout 150000 --exit",
-    "bin": "mmcserver"
+    "bin": "mmcserver",
+    "postversion": "git push && git push --tags"
   },
   "dependencies": {
     "adm-zip": "^0.5.16",
