@@ -1,4 +1,8 @@
+const fs = require('fs');
+const path = require('path');
 var winston = require('winston');
+
+const logsPath = require('../VLCB-server/utilities.js').getLogsPath();
 
 /*
 for rerference only, default npm logging levels used
@@ -33,7 +37,7 @@ var messageOnly = winston.format.combine(
 var options = {
   console: {
     level: 'info',
-    filename: `./logs/console.log`,
+    filename: path.join(logsPath, "console.log"),
 	  options: { flags: 'w' },
     handleExceptions: true,
     maxsize: 1000000,
@@ -42,7 +46,7 @@ var options = {
   },
   debug: {
     level: 'debug',
-    filename: `./logs/debug.log`,
+    filename: path.join(logsPath, "debug.log"),
 	  options: { flags: 'w' },
     handleExceptions: true,
     maxsize: 1000000,
@@ -51,7 +55,7 @@ var options = {
   },
   error: {
     level: 'error',
-    filename: `./logs/error.log`,
+    filename: path.join(logsPath, "error.log"),
 	  options: { flags: 'w' },
     handleExceptions: true,
     maxsize: 1000000,
@@ -60,7 +64,7 @@ var options = {
   },
   info: {
     level: 'info',
-    filename: `./logs/info.log`,
+    filename: path.join(logsPath, "info.log"),
 	  options: { flags: 'w' },
     handleExceptions: true,
     maxsize: 1000000,
@@ -69,7 +73,7 @@ var options = {
   },
   warn: {
     level: 'warn',
-    filename: `./logs/warn.log`,
+    filename: path.join(logsPath, "warn.log"),
 	  options: { flags: 'w' },
     handleExceptions: true,
     maxsize: 1000000,

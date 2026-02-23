@@ -1,10 +1,10 @@
 'use strict';
 const winston = require('winston');		// use config from root instance
-//const fs = require('fs');
-//var path = require('path');
+const fs = require('fs');
+const path = require('path');
 //const AdmZip = require("adm-zip");
 const name = 'utilities'
-
+const os = require("os");
 
 // Scope:
 // variables declared outside of the class are 'global' to this module only
@@ -253,3 +253,62 @@ exports.getTimestamp = function getTimestamp(){
   return timeStamp
 }
 
+/**
+ * Returns the app storage directory
+ * This is based on the OS
+ * @return the app storage directory
+ */
+exports.getAppStorageDirectory = function getAppStorageDirectory() {
+  // create OS based user directories
+  var _appStorageDirectory
+
+  switch (os.platform()) {
+    case 'linux':
+      _appStorageDirectory = path.join(os.homedir(), "MMC-SERVER")
+      break;
+    case 'darwin':    // MAC O/S
+      _appStorageDirectory = path.join(os.homedir(), "MMC-SERVER")
+      break;
+    default:
+      _appStorageDirectory = path.join("C:/ProgramData", "MMC-SERVER")
+  }
+
+  return _appStorageDirectory
+}
+
+/**
+ * Creates a directory that can be written to
+ * If the defaultParentPath cannot be written to, the app storage directory will be used (that is assumed to always be writeable)
+ * The resulting writeable directory will be a joining of the calculated parent directory plus the childDirectory
+ * e.g. if the defaultParentPath cannot be written to, and the childDirectory is "logs", the actual dir may be ${HOME}/MMC-SERVER/logs (on Linux & MacOS)
+ * @param defaultParentPath The default parent directory to use
+ * @param childDirectory The child directory to join to the calculated parent directory
+ * @return a directory that can be written to
+ */
+exports.createWriteableDirectory = function createWriteableDirectory(defaultParentPath, childDirectory) {
+  var _writeablePath
+
+  // Is the default parent directory writeable?
+  try {
+    fs.accessSync(defaultParentPath, fs.constants.W_OK);
+    _writeablePath = path.join(defaultParentPath, childDirectory)  // Yes, so we can use the supplied default parent
+  } catch (err) { // No, e.g. running in npm environment
+    _writeablePath = path.join(this.getAppStorageDirectory(), childDirectory)  // So we'll use the appstorage directory
+    console.log(name + ": createWriteableDirectory cannot write to " + defaultParentPath + ": " + err)
+    console.log(name + ": createWriteableDirectory so we will write to " + _writeablePath + " instead")
+  }
+
+  try{
+    if (!fs.existsSync(_writeablePath)) {
+      fs.mkdirSync(_writeablePath, {recursive: true})
+    }
+  } catch (err){
+    console.error(name + ': createWriteableDirectory could not create the directory ' + err);
+  }
+
+  return _writeablePath
+}
+
+exports.getLogsPath = function getLogsPath(){
+  return path.join(this.createWriteableDirectory(".", "logs"))
+}
