@@ -1,0 +1,50 @@
+name: Publish to npm package to npmjs.com registry
+on:
+  push:
+    tags:
+      - 'v*'  # TODO do we need to be more specific?
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    name: publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Git Main Branch
+        run: git config --global init.defaultBranch main
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+      - name: Install dependencies
+        run: npm install  # I wish package-lock.json was in git, cos then it would be "npm ci" and we'd all be using the same versions
+
+      - name: Build package
+        run: npm run build --if-present
+
+      - name: Publish to NPM
+        run: |
+          # https://stackoverflow.com/questions/66458906/how-to-conditionally-run-github-workflow-action-only-for-tags-made-on-specific-b#comment117567425_66463380
+          git fetch --no-tags --prune --no-recurse-submodules --depth=1 origin main
+          git switch main  # Need to do this or the next test will not work
+          if git merge-base --is-ancestor "${GITHUB_REF_NAME}" HEAD; then
+            TAG=latest
+          else
+            TAG=next
+          fi
+          git checkout "${GITHUB_REF}"  # Now checkout the tag ref (which is where we were before switched to main)
+          npm publish --tag "${TAG}"
