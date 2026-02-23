@@ -103,7 +103,7 @@ describe('configuration tests', function(){
   //
   // Actual tests after here...
   //
-  //****************************************************************************************** */  
+  //****************************************************************************************** */
 
   //
   // Combined node backup test - does read, write, list & delete
@@ -113,14 +113,14 @@ describe('configuration tests', function(){
     let layoutName = 'test_backup_layout'
     let nodeNumber = 999
     let fileName1 = "backupFile1.json"
-    var backupFile1 = { 
+    var backupFile1 = {
       timestamp: new Date().toISOString(),
       layoutName: layoutName,
       ServerVersion: "9.9.9",
       backupNode: {moduleName:"BackupFile1"}
     }
     let fileName3 = "backupFile3.json"
-    var backupFile3 = { 
+    var backupFile3 = {
       timestamp: new Date().toISOString(),
       layoutName: layoutName,
       ServerVersion: "9.9.9",
@@ -151,7 +151,7 @@ describe('configuration tests', function(){
 		}, 10);
   })
 
-  
+
   //
   // returns list of backup file names for all nodes
   // also creates eventBus 'LIST_OF_BACKUPS_FOR_ALL_NODES' with list as data
@@ -159,7 +159,7 @@ describe('configuration tests', function(){
   it("getListOfBackupsForAllNodes test", function (done) {
     winston.info({message: 'unit_test: BEGIN getListOfBackupsForAllNodes test '})
     var layoutName = 'test_backup_layout'
-    var layoutData = {layoutDetails:{title: layoutName}} 
+    var layoutData = {layoutDetails:{title: layoutName}}
     var backupNode1 = {moduleName:"CANACC5"}
     var backupNode2 = {moduleName:"CANMIO"}
     config.writeNodeBackupFile(layoutName, 300, "backupNode1.json", backupNode1)
