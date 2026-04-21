@@ -1,7 +1,7 @@
 {
   "author": "David Ellis",
   "description": "Module Management Console Server",
-  "version": "0.21.0",
+  "version": "0.22.0",
   "license": "MIT",
   "name": "@jimmythedog/mmc-server",
   "main": "./main.js",
