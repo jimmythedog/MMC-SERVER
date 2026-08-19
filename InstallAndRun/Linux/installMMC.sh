@@ -94,7 +94,7 @@ if [ ! -d "MMC-SERVER" ]; then
 	git config --global --add safe.directory $INSTALL_DIR/MMC-SERVER
 	echo "Installing MMC..."
 	cd MMC-SERVER
-	npm install
+	npm ci
 	git config --global --add safe.directory $INSTALL_DIR/MMC_SERVER
 	cd ..
 fi
