@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci-common.yml
+
+  release:
+    name: Create GitHub Release
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create GitHub Release
+        run: |
+          echo "Create GitHub release here"
+
+  publish:
+    name: Publish npm package
+    needs: release
+    runs-on: ubuntu-latest
+
+    steps:
+      # npm publishing steps here
+      - run: echo "Publish npm package here"
+
+  notify:
+    name: Send release notification
+    needs: publish
+    runs-on: ubuntu-latest
+
+    steps:
+      # Notification steps here
+      - run: echo "Send release notification here"
