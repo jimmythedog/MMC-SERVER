@@ -129,7 +129,70 @@ This gives the maintainer control over the contents and timing of each release.
 
 ---
 
-# 4. Pull Request Validation
+# 4. Dependency Management
+
+The project uses `npm` for dependency management.
+
+`package.json` defines the project's dependencies and acceptable version
+ranges, while `package-lock.json` records the exact dependency tree used by
+the project.
+
+## `package-lock.json`
+
+**Note:** `package-lock.json` is part of the project's source code and **must
+be committed to Git**.
+
+When dependencies are changed, changes to `package.json` and
+`package-lock.json` should normally be committed together.
+
+## Install dependencies
+
+When installing dependencies from an existing `package-lock.json` file:
+
+```bash
+npm ci
+```
+
+`npm ci` deletes the `node_modules` directory (if it exists) and then
+installs the exact dependency tree specified by `package-lock.json`.
+
+`npm ci` does **not** modify `package.json` or `package-lock.json`.
+
+> **Do not use `npm install` when simply installing the project's existing
+dependencies. Use `npm ci` instead.**
+
+When adding, removing, or updating dependencies, developers should use `npm`
+commands rather than manually editing `package.json` or `package-lock.json`.
+`npm` will update `package.json` and `package-lock.json` as appropriate.
+
+                 `npm` command
+                     │
+          ┌──────────┴──────────┐
+          ▼                     ▼
+    `package.json`          `package-lock.json`
+   dependency metadata     exact dependency tree
+
+## Runtime dependency
+
+```bash
+npm install <package>
+```
+
+## Development dependency
+
+```bash
+npm install --save-dev <package>
+```
+
+## Remove a dependency
+
+```bash
+npm uninstall <package>
+```
+
+---
+
+# 5. Pull Request Validation
 
 Pull requests should be subject to automated CI checks.
 
@@ -157,7 +220,7 @@ These checks provide automated verification, while the maintainer remains respon
 
 ---
 
-# 5. Integration Testing
+# 6. Integration Testing
 
 Individual pull requests may pass their automated checks while the combination of several changes introduces an unexpected problem.
 
@@ -177,7 +240,7 @@ The release branch should eventually represent:
 
 ---
 
-# 6. Tracking a Release
+# 7. Tracking a Release
 
 GitHub Issues, pull requests, labels, and milestones can be used to track release contents.
 
@@ -197,7 +260,7 @@ The exact tracking mechanism is a project-management choice and does not affect 
 
 ---
 
-# 7. Versioning
+# 8. Versioning
 
 The project should use [Semantic Versioning](https://semver.org/) where appropriate:
 
@@ -225,7 +288,7 @@ This keeps version management centralised and prevents multiple PRs from competi
 
 ---
 
-# 8. Preparing a Release
+# 9. Preparing a Release
 
 When the maintainer decides that the current release branch is ready:
 
@@ -249,7 +312,7 @@ The resulting release should accurately describe the changes that have been inte
 
 ---
 
-# 9. Promoting a Release to `main`
+# 10. Promoting a Release to `main`
 
 Once the release is ready, the release branch is merged into `main`.
 
@@ -279,7 +342,7 @@ main → v2.5.0
 
 ---
 
-# 10. Git Tags and Releases
+# 11. Git Tags and Releases
 
 Each released version should have a corresponding Git tag.
 
@@ -307,7 +370,7 @@ main
 
 ---
 
-# 11. Automated Release Process
+# 12. Automated Release Process
 
 Once the release tag is created, GitHub Actions can perform the repetitive release tasks.
 
@@ -340,7 +403,7 @@ This makes releases reproducible and minimises manual steps.
 
 ---
 
-# 12. Release Notifications
+# 13. Release Notifications
 
 Release announcements should preferably be generated as part of the release process.
 
@@ -365,7 +428,7 @@ The release itself becomes the source of truth for the announcement.
 
 ---
 
-# 13. Responsibilities
+# 14. Responsibilities
 
 ## Contributors
 
@@ -420,7 +483,7 @@ official release
 
 ---
 
-# 14. Complete Release Cycle
+# 15. Complete Release Cycle
 
 A typical release cycle looks like this:
 
@@ -459,7 +522,7 @@ The next cycle then begins from `v2.5.0`.
 
 ---
 
-# 15. Guiding Principles
+# 16. Guiding Principles
 
 ### `main` is stable
 
