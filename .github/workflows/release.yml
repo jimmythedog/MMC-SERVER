@@ -1,5 +1,10 @@
 name: Release
 
+# Orchestrates the release process after a version tag is created. The
+# workflow runs the common CI checks, validates the release tag, creates the
+# GitHub Release, publishes the npm package, and sends the release
+# notification.
+
 on:
   push:
     tags:
@@ -7,6 +12,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: read
 
 jobs:
   ci:
@@ -20,6 +26,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Validate version tag
         run: |
@@ -29,8 +37,11 @@ jobs:
           fi
 
       - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
-          echo "Create GitHub release here"
+          node .github/scripts/create-release.js \
+            "${GITHUB_REF_NAME}"
 
   publish:
     name: Publish npm package

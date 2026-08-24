@@ -369,10 +369,10 @@ main
 ```
 
 ---
-
 # 12. Automated Release Process
 
-Once the release tag is created, GitHub Actions can perform the repetitive release tasks.
+Once the release tag is created, GitHub Actions can perform the repetitive
+release tasks.
 
 A typical release pipeline is:
 
@@ -388,18 +388,78 @@ GitHub Actions
     │     ├── Test
     │     └── Build
     │
+    ├── Identify PRs included in release
+    ├── Validate PR release labels
+    ├── Generate release notes
     ├── Create GitHub Release
     ├── Publish npm package
     └── Send release notification
 ```
 
-The exact steps depend on the project.
+Pull requests are also checked separately when they are opened or updated.
+This provides an early warning if a PR does not have a valid release label,
+without preventing the PR from being merged.
+
+The release process performs a final validation of the release labels before
+creating the GitHub Release.
 
 The important principle is:
 
 > **The version tag is the trigger for the release process.**
 
 This makes releases reproducible and minimises manual steps.
+
+## Automated Release Metadata
+
+Pull requests are used as the source of information for generating GitHub
+Release notes.
+
+Each pull request intended to contribute to a release must have at least one
+of the following labels:
+
+- `bug`
+- `documentation`
+- `enhancement`
+
+The list of valid release labels is defined in
+`.github/scripts/release-config.json`.
+
+### PR Label Validation
+
+A separate GitHub Actions workflow, `release-metadata.yml`, checks pull
+requests when they are opened, updated, or their labels change.
+
+If a pull request does not have a valid release label, the workflow adds a
+warning comment to the pull request. This check is advisory and **does not
+prevent the pull request from being merged**.
+
+Once a valid label is added, the warning is removed.
+
+This provides early feedback to contributors and maintainers, rather than
+waiting until a release is being prepared.
+
+### Release-time Validation
+
+The release workflow performs a second, authoritative check when a release is
+created.
+
+The release scripts identify the pull requests included in the release and
+verify that each has at least one valid release label.
+
+If any release pull request is missing a valid label, the release process stops
+before the GitHub Release is created.
+
+This provides a final safeguard against incomplete release notes, even if a
+pull request was merged without its release metadata being corrected.
+
+### Release Notes
+
+Release notes are generated from the labelled pull requests included in the
+release. This avoids maintaining a separate changelog file in the repository.
+
+The Git history is used to determine which pull requests belong to the release,
+while the pull request title and labels provide the information used to
+organise the release notes.
 
 ---
 
