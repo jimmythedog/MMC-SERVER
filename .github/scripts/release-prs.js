@@ -76,6 +76,7 @@ async function getAllClosedPullRequests(owner, repo, token) {
       break;
     }
   }
+  console.log(`PRs: ${prs}, Length: ${prs.length}`);
 
   return prs;
 }
