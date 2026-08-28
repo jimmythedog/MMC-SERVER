@@ -1,0 +1,56 @@
+name: Bug report
+description: Report a problem with MMC-SERVER.
+labels:
+  - bug
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Clearly describe the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Tell us how to reproduce the problem.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behaviour
+    attributes:
+      label: Expected behaviour
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual-behaviour
+    attributes:
+      label: Actual behaviour
+      description: What happened instead?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: MMC-SERVER version or commit
+      description: For example, a release version or commit SHA.
+  - type: textarea
+    id: environment
+    attributes:
+      label: Platform, operating system, and Node.js version
+      description: Include these details if known.
+      placeholder: |
+        Platform:
+        Operating system:
+        Node.js version:
+  - type: textarea
+    id: supporting-information
+    attributes:
+      label: Logs, errors, screenshots, or other information
+      description: Include anything that may help investigate the problem.

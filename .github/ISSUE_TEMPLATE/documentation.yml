@@ -1,0 +1,19 @@
+name: Documentation issue
+description: Report missing, incorrect, or unclear documentation.
+labels:
+  - documentation
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Documentation problem
+      description: Describe what is missing, incorrect, or unclear.
+    validations:
+      required: true
+  - type: textarea
+    id: improvement
+    attributes:
+      label: Suggested improvement
+      description: Tell us how the documentation could be improved.
+    validations:
+      required: true
