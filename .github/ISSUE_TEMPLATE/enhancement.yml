@@ -1,0 +1,29 @@
+name: Enhancement
+description: Suggest a feature or improvement for MMC-SERVER.
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Problem or motivation
+      description: What problem would this solve or what would it improve?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe the feature or improvement you would like.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What other approaches have you considered?
+  - type: textarea
+    id: additional-information
+    attributes:
+      label: Additional information
+      description: Add any other relevant context, examples, or screenshots.
