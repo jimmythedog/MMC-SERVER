@@ -61,6 +61,7 @@ jobs:
     name: Build Windows x64 distribution
     needs: licences
     runs-on: windows-latest
+    timeout-minutes: 5
 
     steps:
       - name: Checkout repository
@@ -147,6 +148,7 @@ jobs:
     name: Build Linux x64 distribution
     needs: licences
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - name: Checkout repository
@@ -257,6 +259,7 @@ jobs:
     name: Build macOS ${{ matrix.arch }} distribution
     needs: licences
     runs-on: ${{ matrix.runner }}
+    timeout-minutes: 5
 
     strategy:
       matrix:
